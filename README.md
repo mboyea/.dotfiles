@@ -10,7 +10,7 @@ default_: report
 ### Installation
 
 - [Install Linux Mint](https://linuxmint.com/download.php), the operating system
-- [Install Nix][https://nixos.org/download/], the package manager using:
+- [Install Nix](https://nixos.org/download/), the package manager using:
 
   ```sh
   sh <(curl proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
