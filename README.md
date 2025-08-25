@@ -5,7 +5,7 @@ lang: en
 keywords: [ dotfiles, linux, mint, os, ly, i3, i3wm, operating system, bash, nix ]
 default_: report
 ---
-## My PC configuration for [Linux Mint] with [Ly] and [i3wm], controlled with [Nix Home Manager]
+## My PC configuration for [Linux Mint] with [tuigreet] and [i3wm], controlled with [Nix Home Manager]
 
 ### Installation
 
@@ -39,7 +39,7 @@ default_: report
    ```
 
 [Linux Mint]: https://linuxmint.com
-[Ly]: https://github.com/fairyglade/ly
+[tuigreet]: https://github.com/apognu/tuigreet
 [i3wm]: https://i3wm.org/
 [Nix Home Manager]: https://github.com/nix-community/home-manager
 
