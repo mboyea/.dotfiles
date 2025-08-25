@@ -16,7 +16,7 @@ default_: report
    sh <(curl proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
    ```
 
-   Then, restart your terminal to ensure Nix is included in `$PATH`.
+   Then, restart your terminal to ensure Nix is included in `$PATH`
 
 3. [Install Nix Home Manager](https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone) the package manager using:
 
