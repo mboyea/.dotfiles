@@ -5,11 +5,11 @@ lang: en
 keywords: [ dotfiles, linux, mint, os, ly, i3, i3wm, operating system, bash, nix ]
 default_: report
 ---
-## My PC configuration for [Linux Mint] with [Ly] and [i3wm], controlled with [Nix Home Manager]
+## My PC configuration for [Linux Mint Cinnamon] with [Ly] and [i3wm], controlled with [Nix Home Manager]
 
 ### Installation
 
-1. [Install Linux Mint](https://linuxmint.com/download.php), the operating system
+1. [Install Linux Mint Cinnamon](https://linuxmint.com/download.php), the operating system
 2. [Install Nix](https://nixos.org/download/), the package installer using:
 
    ```sh
