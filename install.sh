@@ -29,5 +29,5 @@ done
 echo -e '\e[1mDisabling startup splash screen...\e[0m'
 
 sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/^.*$/GRUB_CMDLINE_LINUX_DEFAULT=""/' /etc/default/grub # ! sudo
-
+update-grub # ! sudo
 
