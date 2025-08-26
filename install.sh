@@ -21,9 +21,9 @@ if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
 fi
 mkdir -p /etc/greetd # ! sudo
 cp -f static/etc/greetd/conf.toml /etc/greetd # ! sudo
-# ? pam_encryptfs can sometimes cause greetd to fail to boot, as they are incompatible; encryptfs is deprecated anyways
+# ? pam_ecryptfs can sometimes cause greetd to fail to boot, as they are incompatible; ecryptfs is deprecated anyways
 for file in /etc/pam.d/*; do
-  sed -i.bak '/^(?!\s*#).*pam_encryptfs.so/s/^/# /' "$file" # ! sudo
+  sed -i.bak '/^[^#]*pam_ecryptfs/s/^/# /' "$file"
 done
 
 echo -e '\e[1mDisabling startup splash screen...\e[0m'
