@@ -10,6 +10,9 @@ default_: report
 ### Installation
 
 1. [Install Linux Mint Cinnamon](https://linuxmint.com/download.php) the operating system
+
+   Do *not* select to encrypt the user drive during installation; `encryptfs` is deprecated software and is disabled as part of this configuration.
+
 2. [Install Nix](https://nixos.org/download/) the package installer using:
 
    ```sh

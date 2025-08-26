@@ -20,4 +20,7 @@ if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
 fi
 mkdir -p /etc/greetd # ! sudo
 cp -f static/etc/greetd/conf.toml /etc/greetd # ! sudo
+for file in /etc/pam.d/*; do
+  sed -i.bak '/^(?!\s*#).*pam_encryptfs.so/s/^/# /' "$file" # ! sudo
+done
 
