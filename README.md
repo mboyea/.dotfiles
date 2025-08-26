@@ -2,7 +2,7 @@
 title: Linux Mint Dotfiles
 author: [ Matthew T. C. Boyea ]
 lang: en
-keywords: [ dotfiles, linux, mint, os, ly, i3, i3wm, operating system, bash, nix ]
+keywords: [ dotfiles, linux, mint, os, greetd, tuigreet, i3, i3wm, operating system, bash, nix ]
 default_: report
 ---
 ## My PC configuration for [Linux Mint] with [tuigreet] and [i3wm], controlled with [Nix Home Manager]

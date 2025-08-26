@@ -1,16 +1,23 @@
 #!/usr/bin/env bash
 
-echo 'Hello, world!'
+echo 'TODO: remove early exit'
 exit
 
-### Install Ly DM ###
+# TODO: sudo su
 
-pushd src/ly
-nix-shell -p zig glibc pam xorg.libxcb --command 'zig build'
-# sudo su
-# nix-shell -p zig glibc pam xorg.libxcb --command 'zig build installexe -D init_system=systemd'
-popd
-# sudo su
-# systemctl disable lightdm.service
-# systemctl enable ly.service
+echo -e '\e[1mUpdating package cache...\e[0m'
+apt update # ! sudo
+
+echo -e '\e[1mInstalling greetd+tuigreet...\e[0m'
+
+nix-shell -p cargo --command 'cargo build --release --targetdir src/tuigreet'
+cp -f src/tuigreet/target/release/tuigreet /usr/local/bin/ # ! sudo
+apt install greetd # ! sudo
+systemctl disable casper-md5check # ! sudo
+systemctl disable lightdm.service # ! sudo
+if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
+  systemctl enable greetd.service # ! sudo
+fi
+mkdir -p /etc/greetd # ! sudo
+cp -f static/etc/greetd/conf.toml /etc/greetd # ! sudo
 
