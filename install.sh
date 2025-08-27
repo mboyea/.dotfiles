@@ -35,7 +35,11 @@ update-grub # ! sudo
 
 echo -e '\e[1mTODO: Installing i3wm...\e[0m'
 
-echo -e '\e[1mTODO: Installing Nix Home Manager\e[0m'
+echo -e '\e[1mTODO: Installing Nix Home Manager...\e[0m'
+
+nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+nix-channel --update
+nix-shell '<home-manager>' -A install
 
 echo -e '\e[1mConfiguring Cinnamon...\e[0m'
 

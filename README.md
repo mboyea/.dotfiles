@@ -21,21 +21,13 @@ default_: report
 
    Then, restart your terminal to ensure Nix is included in `$PATH`
 
-3. [Install Nix Home Manager](https://nix-community.github.io/home-manager/index.xhtml#sec-install-standalone) the package manager using:
-
-   ```sh
-   nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-   nix-channel --update
-   nix-shell '<home-manager>' -A install
-   ```
-
-4. Clone this git repository using:
+3. Clone this git repository using:
 
    ```sh
    nix-shell -p git --command 'git clone --recurse-submodules https://github.com/mboyea/.dotfiles ~/.dotfiles'
    ```
 
-5. Run the install script using:
+4. Run the install script using:
 
    ```sh
    ~/.dotfiles/install.sh
