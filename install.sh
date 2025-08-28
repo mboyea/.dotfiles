@@ -15,12 +15,18 @@ echo -e '\e[1mInstalling greetd+tuigreet...\e[0m'
 nix-shell -p cargo --command 'cargo build --release --targetdir src/tuigreet'
 cp -f src/tuigreet/target/release/tuigreet /usr/local/bin/ # ! sudo
 apt install greetd # ! sudo
-# ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process (required to change the DM to greetd)
+# ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
 systemctl disable casper-md5check # ! sudo
-systemctl disable lightdm.service # ! sudo
+# ? disable lightdm, then make sure greetd is enabled
 if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
+  systemctl disable lightdm.service # ! sudo
   systemctl enable greetd.service # ! sudo
 fi
+# ? create cache directory for --remember* tuigreet features to work
+mkdir -p /var/cache/tuigreet # ! sudo
+chown _greetd:_greetd /var/cache/tuigreet # ! sudo
+chmod 0755 /var/cache/tuigreet # ! sudo
+# ? configure greetd to use tuigreet
 mkdir -p /etc/greetd # ! sudo
 cp -f src/root/etc/greetd/conf.toml /etc/greetd # ! sudo
 # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
@@ -33,9 +39,11 @@ echo -e '\e[1mDisabling startup splash screen...\e[0m'
 sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub # ! sudo
 update-grub # ! sudo
 
-echo -e '\e[1mTODO: Installing i3wm...\e[0m'
+echo -e '\e[1mInstalling i3wm...\e[0m'
 
-echo -e '\e[1mTODO: Installing Nix Home Manager...\e[0m'
+apt install i3 # ! sudo
+
+echo -e '\e[1mInstalling Nix Home Manager...\e[0m'
 
 nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
 nix-channel --update
