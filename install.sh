@@ -6,6 +6,9 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+
 echo -e '\e[1mUpdating package cache...\e[0m'
 
 apt update # ! sudo
@@ -17,7 +20,7 @@ apt install i3 # ! sudo
 echo -e '\e[1mInstalling greetd+tuigreet...\e[0m'
 
 nix-shell -p cargo --command 'cargo build --release --targetdir src/tuigreet'
-cp -f src/tuigreet/target/release/tuigreet /usr/local/bin/ # ! sudo
+cp -f "$SCRIPT_DIR/src/tuigreet/target/release/tuigreet" /usr/local/bin/ # ! sudo
 apt install greetd # ! sudo
 # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
 systemctl disable casper-md5check # ! sudo
@@ -32,7 +35,7 @@ chown _greetd:_greetd /var/cache/tuigreet # ! sudo
 chmod 0755 /var/cache/tuigreet # ! sudo
 # ? configure greetd to use tuigreet
 mkdir -p /etc/greetd # ! sudo
-cp -f src/root/etc/greetd/conf.toml /etc/greetd # ! sudo
+cp -f "$SCRIPT_DIR/src/root/etc/greetd/conf.toml" /etc/greetd # ! sudo
 # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
 find /etc/pam.d -type f -not -name '*.bak' -print0 \
   | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
