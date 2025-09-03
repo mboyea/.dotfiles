@@ -8,7 +8,7 @@ fi
 
 if printenv PATH | grep -vq 'nix'; then
   echo -e '\e[1mMaking Nix packages accessible as root...\e[0m'
-  echo 'Defaults secure_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/nix/var/nix/profiles/default/bin"' > /etc/sudoers.d/enablerootnixpkgs
+  echo 'Defaults secure_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/nix/var/nix/profiles/default/bin"' > /etc/sudoers.d/enablerootnixpkgs # ! sudo
   exec sudo bash "$0" "$@"
   exit 1
 fi
