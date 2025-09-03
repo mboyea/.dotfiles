@@ -52,8 +52,8 @@ cp -r /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup # ! sud
 rm -f /usr/share/xsessions/cinnamon2d.desktop # ! sudo
 rm -f /usr/share/xsessions/i3-with-shmlog.desktop # ! sudo
 rm -f /usr/share/wayland-sessions/cinnamon-wayland.desktop # ! sudo
-sed -i.bak '/Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
-sed -i.bak '/Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
+sed '/Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
+sed '/Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
 
 echo -e '\e[1mEnabling boot log screen...\e[0m'
 
