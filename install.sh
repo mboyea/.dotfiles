@@ -6,7 +6,7 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-if printenv PATH | grep -q 'nix'; then
+if printenv PATH | grep -vq 'nix'; then
   echo -e '\e[1mMaking Nix packages accessible as root...\e[0m'
   echo 'Defaults secure_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/nix/var/nix/profiles/default/bin"' > /etc/sudoers.d/enablerootnixpkgs
   exec sudo bash "$0" "$@"
