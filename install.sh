@@ -35,7 +35,7 @@ chown _greetd:_greetd /var/cache/tuigreet # ! sudo
 chmod 0755 /var/cache/tuigreet # ! sudo
 # ? configure greetd to use tuigreet
 mkdir -p /etc/greetd # ! sudo
-cp -f "$SCRIPT_DIR/src/root/etc/greetd/conf.toml" /etc/greetd # ! sudo
+cp -f "$SCRIPT_DIR/src/root/etc/greetd/config.toml" /etc/greetd # ! sudo
 # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
 find /etc/pam.d -type f -not -name '*.bak' -print0 \
   | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
