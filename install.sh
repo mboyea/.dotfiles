@@ -6,8 +6,14 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+if printenv PATH | grep -q 'nix'; then
+  echo -e '\e[1mMaking Nix packages accessible as root...\e[0m'
+  echo 'Defaults secure_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/nix/var/nix/profiles/default/bin"' > /etc/sudoers.d/enablerootnixpkgs
+  exec sudo bash "$0" "$@"
+  exit 1
+fi
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 echo -e '\e[1mUpdating package cache...\e[0m'
 
@@ -46,8 +52,8 @@ cp -r /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup # ! sud
 rm -f /usr/share/xsessions/cinnamon2d.desktop # ! sudo
 rm -f /usr/share/xsessions/i3-with-shmlog.desktop # ! sudo
 rm -f /usr/share/wayland-sessions/cinnamon-wayland.desktop # ! sudo
-sed -i.bak '/Exec=[^>]*$/s/$/ > /dev/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
-sed -i.bak '/Exec=[^>]*$/s/$/ > /dev/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
+sed -i.bak '/Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
+sed -i.bak '/Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
 
 echo -e '\e[1mEnabling boot log screen...\e[0m'
 
