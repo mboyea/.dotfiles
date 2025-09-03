@@ -19,7 +19,7 @@ apt install i3 # ! sudo
 
 echo -e '\e[1mInstalling greetd+tuigreet...\e[0m'
 
-nix-shell -p cargo --command 'cargo build --release --targetdir src/tuigreet'
+nix-shell -p cargo --command "cargo build --release --targetdir $SCRIPT_DIR/src/tuigreet"
 cp -f "$SCRIPT_DIR/src/tuigreet/target/release/tuigreet" /usr/local/bin/ # ! sudo
 apt install greetd # ! sudo
 # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
