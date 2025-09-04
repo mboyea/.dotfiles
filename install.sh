@@ -73,6 +73,12 @@ gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark-Aqua'
 gsettings set org.cinnamon.desktop.interface gtk-theme-backup 'Adwaita'
 gsettings set org.cinnamon.theme name 'cinnamon'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.x.apps.portal color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
+gsettings set org.cinnamon.desktop.interface cursor-theme 'Yaru'
+x.dm.slick-greeter cursor-theme-name 'Adwaita'
+update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
+gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
 
 # todo: home-manager switch
 
