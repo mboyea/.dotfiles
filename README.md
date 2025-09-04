@@ -7,7 +7,7 @@ default_: report
 ---
 ## A Linux Mint configuration with a retro-terminal aesthetic
 
-My favorite way to do focused work on Linux is using macros/keybinds to jump around terminals in a tiling window manager where I barely touch my mouse.
+My favorite way to do focused work is on Linux using keybinds to jump around terminals in a tiling window manager where I barely touch my mouse.
 However, those are very custom setups and sometimes I need my laptop to *just work* like a normal computer...
 
 - I **don't** want to spend time *manually setting up drivers*
@@ -19,7 +19,7 @@ These are my dotfiles to setup Linux Mint like a barebones CLI-focused linux ins
 
 - This replaces LightDM with [tuigreet] and shows logs at boot time for a retro-terminal aesthetic.
 - This installs [i3wm] and configures [Cinnamon] for tiling.
-- This installs [Nix Home Manager] for declaring user packages and user preferences in one place to prevent package incompatibilities and encourage reproducability between machines.
+- Instructions are linked to configure i3wm. I use [Nix Home Manager] for declaring user packages and user preferences in one place to prevent incompatibilities and encourage reproducability between machines.
 
 ### Installation
 
@@ -46,6 +46,10 @@ These are my dotfiles to setup Linux Mint like a barebones CLI-focused linux ins
    ```sh
    ~/.dotfiles/install.sh
    ```
+
+5. Configure i3wm for each user.
+
+   See [github.com/mboyea/home-manager](https://github.com/mboyea/home-manger) fro instructions.
 
 [Linux Mint]: https://linuxmint.com
 [tuigreet]: https://github.com/apognu/tuigreet

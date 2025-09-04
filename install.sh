@@ -60,13 +60,7 @@ echo -e '\e[1mEnabling boot log screen...\e[0m'
 sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub # ! sudo
 update-grub # ! sudo
 
-echo -e '\e[1mInstalling Nix Home Manager...\e[0m'
-
-nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-nix-channel --update
-nix-shell '<home-manager>' -A install
-
-echo -e '\e[1mConfiguring Desktops...\e[0m'
+echo -e '\e[1mConfiguring Cinnamon...\e[0m'
 
 gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
 gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark-Aqua'
@@ -80,5 +74,6 @@ x.dm.slick-greeter cursor-theme-name 'Adwaita'
 update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
 gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
 
-# todo: home-manager switch
+echo -e '\e[1mCompleted setup.\e[0m'
+echo -e 'To configure i3wm, follow the instructions at https://github.com/mboyea/home-manager'
 
