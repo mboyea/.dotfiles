@@ -74,6 +74,5 @@ x.dm.slick-greeter cursor-theme-name 'Adwaita'
 update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
 gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
 
-echo -e '\e[1mCompleted setup.\e[0m'
-echo -e 'To configure i3wm, follow the instructions at https://github.com/mboyea/home-manager'
-
+echo -e '\e[1mCompleted system setup.\e[0m'
+echo -e '\e[1mTODO: Linking dotfiles...\e[0m'
