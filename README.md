@@ -19,7 +19,7 @@ These are my dotfiles to setup Linux Mint like a barebones CLI-focused linux ins
 
 - This replaces LightDM with [tuigreet] and shows logs at boot time for a retro-terminal aesthetic.
 - This installs [i3wm] and configures [Cinnamon] for tiling.
-- Instructions are linked to configure i3wm. I use [Nix Home Manager] for declaring user packages and user preferences in one place to prevent incompatibilities and encourage reproducability between machines.
+- This uses [Nix Home Manager] for installing user packages to avoid software incompatibilities.
 
 ### Installation
 
@@ -47,13 +47,8 @@ These are my dotfiles to setup Linux Mint like a barebones CLI-focused linux ins
    ~/.dotfiles/install.sh
    ```
 
-5. Configure i3wm for each user.
-
-   See [github.com/mboyea/home-manager](https://github.com/mboyea/home-manager) for instructions.
-
 [Linux Mint]: https://linuxmint.com
 [tuigreet]: https://github.com/apognu/tuigreet
 [Cinnamon]: https://github.com/linuxmint/cinnamon
 [i3wm]: https://i3wm.org/
 [Nix Home Manager]: https://github.com/nix-community/home-manager
-

@@ -25,8 +25,8 @@ apt install i3 # ! sudo
 
 echo -e '\e[1mInstalling greetd+tuigreet...\e[0m'
 
-nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/src/tuigreet/Cargo.toml'"
-cp -f "$SCRIPT_DIR/src/tuigreet/target/release/tuigreet" /usr/local/bin/ # ! sudo
+nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/tuigreet/Cargo.toml'"
+cp -f "$SCRIPT_DIR/tuigreet/target/release/tuigreet" /usr/local/bin/ # ! sudo
 apt install greetd # ! sudo
 # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
 systemctl disable casper-md5check # ! sudo
@@ -41,7 +41,7 @@ chown _greetd:_greetd /var/cache/tuigreet # ! sudo
 chmod 0755 /var/cache/tuigreet # ! sudo
 # ? configure greetd to use tuigreet
 mkdir -p /etc/greetd # ! sudo
-cp -f "$SCRIPT_DIR/src/root/etc/greetd/config.toml" /etc/greetd # ! sudo
+cp -f "$SCRIPT_DIR/root/etc/greetd/config.toml" /etc/greetd # ! sudo
 # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
 find /etc/pam.d -type f -not -name '*.bak' -print0 \
   | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
@@ -75,4 +75,15 @@ update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
 gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
 
 echo -e '\e[1mCompleted system setup.\e[0m'
-echo -e '\e[1mTODO: Linking dotfiles...\e[0m'
+
+# todo: switch back to active user ($SUDO_USER)
+
+# todo: install nix home manager
+
+# todo: recursively symlink every file found in home/
+
+# todo: inject include of common.nix into home.nix
+
+# todo: run nix home manager switch
+
+echo -e '\e[1mTODO:Completed user setup.\e[0m'
