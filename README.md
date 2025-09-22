@@ -49,7 +49,7 @@ These are my dotfiles to setup Linux Mint like a barebones CLI-focused linux ins
 
 5. Configure i3wm for each user.
 
-   See [github.com/mboyea/home-manager](https://github.com/mboyea/home-manger) fro instructions.
+   See [github.com/mboyea/home-manager](https://github.com/mboyea/home-manager) for instructions.
 
 [Linux Mint]: https://linuxmint.com
 [tuigreet]: https://github.com/apognu/tuigreet
