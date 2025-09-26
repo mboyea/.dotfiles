@@ -47,6 +47,16 @@ These are my dotfiles to setup Linux Mint like a barebones CLI-focused linux ins
    ~/.dotfiles/install.sh
    ```
 
+### FAQ
+
+#### The text is too small on my boot / greet screen. How can I make it bigger?
+
+Use the following command, and follow the prompts:
+
+```sh
+sudo dpkg-reconfigure console-setup
+```
+
 [Linux Mint]: https://linuxmint.com
 [tuigreet]: https://github.com/apognu/tuigreet
 [Cinnamon]: https://github.com/linuxmint/cinnamon
