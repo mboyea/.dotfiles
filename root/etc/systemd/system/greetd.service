@@ -1,0 +1,12 @@
+[Service]
+StandardError=journal
+StandardInput=tty
+# Without this errors will spam on screen
+StandardOutput=tty
+
+# Without these bootlogs will spam on screen
+TTYPath=/dev/tty1
+TTYReset=true
+TTYVHangup=true
+TTYVTDisallocate=true
+
