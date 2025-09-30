@@ -41,7 +41,7 @@ function install_system {
     exit 1
   fi
 
-  if printenv PATH | grep -qv 'nix'; then
+  if ! $(printenv PATH | grep -q 'nix'); then
     echo_bold 'Making Nix packages accessible as root...'
     echo 'Defaults secure_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/nix/var/nix/profiles/default/bin"' > /etc/sudoers.d/enablerootnixpkgs # ! sudo
     exec sudo bash "$0" "$@" --system
@@ -139,8 +139,13 @@ function install_user {
 
   echo_bold 'Injecting Nix Home Manager configuration...'
 
-  # sed -i '' ~/.config/home-manager/home.nix
-  # TODO: sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
+  if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
+    if grep -q -e '^\s*imports=' -e '^\s*imports .*=' ~/.config/home-manager/home.nix; then
+      sed -iE '/^\s*imports\(=\| .*=\).*/a\    ./common.nix' ~/.config/home-manager/home.nix
+    else
+      sed -i '/^{\S*$/a\  imports = [\n    ./common.nix\n  ];' ~/.config/home-manager/home.nix
+    fi
+  fi
   
   echo_bold 'TODO: (home-manager switch) Updating Nix Home Manager...'
   
