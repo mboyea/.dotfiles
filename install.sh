@@ -125,9 +125,22 @@ function install_user {
   nix-channel --update
   nix-shell '<home-manager>' -A install
   
-  echo_bold 'TODO: (GNU Stow?) Linking dotfiles...'
-  
-  echo_bold 'TODO: (include common.nix) Injecting Nix Home Manager configuration...'
+  echo_bold 'Linking dotfiles...'
+
+  find "$SCRIPT_DIR/home" -type f -print0 | while IFS= read -r -d '' file; do
+    file_relative_path="${file#$SCRIPT_DIR/home/}"
+    mkdir -p "$(dirname ~/"$file_relative_path")"
+    rm -rf ~/"$file_relative_path"
+    ln -s "$file" ~/"$file_relative_path"
+    if [[ $? -eq 0 ]]; then
+      echo "Linked $file_relative_path."
+    fi
+  done
+
+  echo_bold 'Injecting Nix Home Manager configuration...'
+
+  # sed -i '' ~/.config/home-manager/home.nix
+  # TODO: sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
   
   echo_bold 'TODO: (home-manager switch) Updating Nix Home Manager...'
   
@@ -157,6 +170,7 @@ function main {
       fi
     fi
   fi
+
   install_user
 }
 
