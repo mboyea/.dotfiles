@@ -147,7 +147,9 @@ function install_user {
     fi
   fi
   
-  echo_bold 'TODO: (home-manager switch) Updating Nix Home Manager...'
+  echo_bold 'Updating Nix Home Manager...'
+
+  home-manager switch
   
   echo_bold 'Completed user setup.'
 }
