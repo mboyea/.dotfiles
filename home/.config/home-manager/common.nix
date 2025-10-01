@@ -1,10 +1,35 @@
-# This file declares overwrites for an existing home.nix file; fields that are pre-existing in the configuration like home.username and home.stateVersion are left intact.
 { config, lib, pkgs, inputs, ... }: {
-  home.packages = with pkgs; [
-  ];
-  home.file = {
+  nixpkgs = {
+    config = {
+      allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+        "vscode"
+        "discord"
+        "spotify"
+      ];
+    };
   };
+
+  home.packages = with pkgs; [
+    neovim
+    git
+    gh
+    alacritty
+    vscode
+    discord
+    spotify
+    vlc
+    libreoffice
+    gimp
+    inkscape
+    audacity
+    lmms
+    obs-studio
+  ];
+
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    EDITOR = "nvim";
+    BROWSER = "firefox"; # ? provided by apt with Linux Mint Cinnamon
+    TERMINAL = "alacritty";
   };
 }
+
