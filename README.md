@@ -7,8 +7,8 @@ default_: report
 ---
 ## A Linux Mint configuration with a retro-terminal aesthetic
 
-My favorite way to do focused work is on Linux using keybinds to jump around terminals in a tiling window manager where I barely touch my mouse.
-However, those are very custom setups and sometimes I need my laptop to *just work* like a normal computer...
+My favorite way to do focused work is on Linux, using keybinds to jump between terminals, messaging, and creative software without touching my mouse.
+However, I also need my laptop to *just work* without spending hours tinkering away on it...
 
 - I **don't** want to spend time *manually setting up drivers*
 - I **don't** want inturrupted by *updates breaking the computer*
