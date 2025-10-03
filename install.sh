@@ -124,7 +124,7 @@ function install_user {
   nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
   nix-channel --update
   nix-shell '<home-manager>' -A install
-  
+
   echo_bold 'Linking dotfiles...'
 
   find "$SCRIPT_DIR/home" -type f -print0 | while IFS= read -r -d '' file; do

@@ -1,4 +1,6 @@
 { config, lib, pkgs, inputs, ... }: {
+  nixGL.packages = import <nixgl> { inherit pkgs; };
+
   nixpkgs = {
     config = {
       allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -13,9 +15,9 @@
     neovim
     git
     gh
-    alacritty
+    (config.lib.nixGL.wrap alacritty) 
     vscode
-    discord
+    (config.lib.nixGL.wrap discord) 
     spotify
     vlc
     libreoffice
@@ -23,7 +25,7 @@
     inkscape
     audacity
     lmms
-    obs-studio
+    (config.lib.nixGL.wrap obs-studio)
   ];
 
   home.sessionVariables = {
