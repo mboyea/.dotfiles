@@ -16,7 +16,6 @@
     git
     gh
     (config.lib.nixGL.wrap alacritty) 
-    vscode
     (config.lib.nixGL.wrap discord) 
     spotify
     vlc
