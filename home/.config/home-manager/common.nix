@@ -32,5 +32,10 @@
     BROWSER = "firefox"; # ? provided by apt with Linux Mint Cinnamon
     TERMINAL = "alacritty";
   };
+
+  nix = {
+    package = pkgs.nix;
+    settings.experimental-features = [ "nix-command" "flakes" ];
+  };
 }
 
