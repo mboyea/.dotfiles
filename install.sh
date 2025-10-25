@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 function echo_bold {
   options=()
   while (( "$#" )); do
@@ -20,19 +22,17 @@ function echo_bold {
   echo "${options[@]}" "\e[1m$@\e[0m"
 }
 
-function get_yes_confirmation {
+function get_y_confirmation {
   echo -n "$@ ("
   echo_bold -n 'y'
   echo -n '/yes to confirm) '
   read input
-  if [[ "$input" =~ ^[Yy] ]]; then
+  if [[ "$input" =~ '^[Yy]' ]]; then
     return 0
   else
     return 1
   fi
 }
-
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 function install_system {
   if [[ $EUID -ne 0 ]]; then
@@ -84,18 +84,20 @@ function install_system {
   # ? hide special session configurations
   mkdir -p /usr/share/backup # ! sudo
   cp -r /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup # ! sudo
-  rm -f /usr/share/xsessions/cinnamon2d.desktop # ! sudo
   rm -f /usr/share/xsessions/i3-with-shmlog.desktop # ! sudo
-  rm -f /usr/share/wayland-sessions/cinnamon-wayland.desktop # ! sudo
-  sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
-  sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
+  # ! rm -f /usr/share/xsessions/cinnamon2d.desktop # ! sudo
+  # ! rm -f /usr/share/wayland-sessions/cinnamon-wayland.desktop # ! sudo
+  # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
+  rm -f /usr/share/xsessions/i3.desktop # ! sudo
+  sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop # ! sudo
+  # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
   
-  echo_bold 'Enabling boot log screen...'
+  echo_bold 'Enabling boot terminal output...'
   
   sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub # ! sudo
   update-grub # ! sudo
 
-  echo_bold 'Configuring system...'
+  echo_bold 'Configuring screen saver...'
 
   mkdir -p /etc/lightdm
   cp -f "$SCRIPT_DIR/root/etc/lightdm/slick-greeter.conf" /etc/lightdm # ! sudo
@@ -106,13 +108,13 @@ function install_system {
 }
 
 function install_user {
-  echo_bold 'Configuring Cinnamon...'
+  echo_bold 'Configuring gsettings...'
   
-  gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
-  gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark-Aqua'
-  gsettings set org.cinnamon.desktop.interface gtk-theme-backup 'Adwaita'
-  gsettings set org.cinnamon.theme name 'cinnamon'
-  gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
+  # ! gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
+  # ! gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark-Aqua'
+  # ! gsettings set org.cinnamon.desktop.interface gtk-theme-backup 'Adwaita'
+  # ! gsettings set org.cinnamon.theme name 'cinnamon'
+  # ! gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
   gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
   gsettings set org.x.apps.portal color-scheme 'prefer-dark'
   gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
@@ -120,10 +122,12 @@ function install_user {
   update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
   
   echo_bold 'Installing Nix Home Manager...'
-  
-  nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-  nix-channel --update
-  nix-shell '<home-manager>' -A install
+
+  if [[ -z "$HOME_MANAGER_CONFIG_PATH" ]]; then
+    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+    nix-channel --update
+    nix-shell '<home-manager>' -A install
+  fi
 
   echo_bold 'Linking dotfiles...'
 
@@ -149,7 +153,7 @@ function install_user {
   
   echo_bold 'Updating Nix Home Manager...'
 
-  home-manager switch
+  # ! home-manager switch
   
   echo_bold 'Completed user setup.'
 }
@@ -171,7 +175,7 @@ function main {
     if [[ -n "${DO_AUTHORIZE_SYSTEM_INSTALL:x}" ]]; then
       install_system
     else
-      get_yes_confirmation 'Do you want to install greetd+tuigreet and i3wm?'
+      get_y_confirmation 'Do you want to install greetd+tuigreet and i3wm?'
       if [[ $? -eq 0 ]]; then
         install_system
       fi
