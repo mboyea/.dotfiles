@@ -87,8 +87,9 @@ function install_system {
   rm -f /usr/share/xsessions/i3-with-shmlog.desktop # ! sudo
   # ! rm -f /usr/share/xsessions/cinnamon2d.desktop # ! sudo
   # ! rm -f /usr/share/wayland-sessions/cinnamon-wayland.desktop # ! sudo
-  # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
   rm -f /usr/share/xsessions/i3.desktop # ! sudo
+  # ? hide xorg output on session startup
+  # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
   sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop # ! sudo
   # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
   
@@ -108,13 +109,14 @@ function install_system {
 }
 
 function install_user {
-  echo_bold 'Configuring gsettings...'
+  echo_bold 'Configuring Settings...'
   
   # ! gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
   # ! gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark-Aqua'
   # ! gsettings set org.cinnamon.desktop.interface gtk-theme-backup 'Adwaita'
   # ! gsettings set org.cinnamon.theme name 'cinnamon'
   # ! gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
+  # TODO set xfce options
   gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
   gsettings set org.x.apps.portal color-scheme 'prefer-dark'
   gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
@@ -153,7 +155,7 @@ function install_user {
   
   echo_bold 'Updating Nix Home Manager...'
 
-  # ! home-manager switch
+  home-manager switch
   
   echo_bold 'Completed user setup.'
 }
