@@ -79,7 +79,7 @@ function install_system {
   #   systemctl disable lightdm.service
   #   systemctl enable greetd.service
   # fi
-  # todo: find out why and fix that greetd ruins XFCE styling
+  # todo: find out why and fix that disable + enable ruins XFCE styling
   # ? create cache directory for --remember* tuigreet features to work
   mkdir -p /var/cache/tuigreet
   chown _greetd:_greetd /var/cache/tuigreet
