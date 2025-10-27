@@ -67,56 +67,45 @@ function install_system {
     fi
   done
 
-  # echo_bold 'Installing i3wm...'
-  # 
-  # apt install i3 # ! sudo
-  # 
-  # echo_bold 'Installing greetd+tuigreet...'
-  # 
-  # nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/tuigreet/Cargo.toml'"
-  # cp -f "$SCRIPT_DIR/tuigreet/target/release/tuigreet" /usr/local/bin/ # ! sudo
-  # apt install greetd # ! sudo
-  # # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
-  # systemctl disable casper-md5check # ! sudo
+  echo_bold 'Installing greetd+tuigreet...'
+
+  apt install greetd
+  nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/tuigreet/Cargo.toml'"
+  cp -f "$SCRIPT_DIR/tuigreet/target/release/tuigreet" /usr/local/bin/
+  # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
+  systemctl disable casper-md5check
   # # ? disable lightdm, then make sure greetd is enabled
+  # # TODO
   # if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
   #   systemctl disable lightdm.service # ! sudo
   #   systemctl enable greetd.service # ! sudo
   # fi
-  # # ? create cache directory for --remember* tuigreet features to work
-  # mkdir -p /var/cache/tuigreet # ! sudo
-  # chown _greetd:_greetd /var/cache/tuigreet # ! sudo
-  # chmod 0755 /var/cache/tuigreet # ! sudo
-  # # ? configure greetd to use tuigreet
-  # mkdir -p /etc/greetd # ! sudo
-  # cp -f "$SCRIPT_DIR/root/etc/greetd/config.toml" /etc/greetd # ! sudo
-  # mkdir -p /etc/systemd/system/greetd.service.d
-  # cp -f "$SCRIPT_DIR/root/etc/systemd/system/greetd.service.d/override.conf" /etc/systemd/system/greetd.service.d # ! sudo
-  # # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
-  # find /etc/pam.d -type f -not -name '*.bak' -print0 \
-  #   | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
-  #   | xargs -0r sed -i.bak '/^[^#]*pam_ecryptfs/s/^/# /' # ! sudo
+  # ? create cache directory for --remember* tuigreet features to work
+  mkdir -p /var/cache/tuigreet
+  chown _greetd:_greetd /var/cache/tuigreet
+  chmod 0755 /var/cache/tuigreet
+  # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
+  find /etc/pam.d -type f -not -name '*.bak' -print0 \
+    | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
+    | xargs -0r sed -i.bak '/^[^#]*pam_ecryptfs/s/^/# /' # ! sudo
   # # ? hide special session configurations
-  # mkdir -p /usr/share/backup # ! sudo
-  # cp -r /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup # ! sudo
-  # rm -f /usr/share/xsessions/i3-with-shmlog.desktop # ! sudo
-  # # ! rm -f /usr/share/xsessions/cinnamon2d.desktop # ! sudo
-  # # ! rm -f /usr/share/wayland-sessions/cinnamon-wayland.desktop # ! sudo
-  # rm -f /usr/share/xsessions/i3.desktop # ! sudo
-  # # ? hide xorg output on session startup
-  # # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
-  # sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop # ! sudo
-  # # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
-  # 
-  # echo_bold 'Enabling boot terminal output...'
-  # 
-  # sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub # ! sudo
-  # update-grub # ! sudo
+  mkdir -p /usr/share/backup
+  cp -r /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup
+  rm -f /usr/share/xsessions/i3-with-shmlog.desktop
+  rm -f /usr/share/xsessions/i3.desktop
+  # ? hide xorg output on session startup
+  sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop
+  # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop
 
-  # echo_bold 'Configuring screen saver...'
-
-  # mkdir -p /etc/lightdm
-  # cp -f "$SCRIPT_DIR/root/etc/lightdm/slick-greeter.conf" /etc/lightdm # ! sudo
+  # echo_bold 'Installing i3wm...'
+  # TODO
+  
+  echo_bold 'Enabling visible boot logs...'
+  
+  sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub
+  update-grub
+  # 
+  # apt install i3 # ! sudo
 
   echo_bold 'Completed system setup.'
 
@@ -159,13 +148,13 @@ function install_user {
   home-manager switch
 
   # echo_bold 'Configuring Settings...'
-  
+  # # TODO
   # # ! gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
   # # ! gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark-Aqua'
   # # ! gsettings set org.cinnamon.desktop.interface gtk-theme-backup 'Adwaita'
   # # ! gsettings set org.cinnamon.theme name 'cinnamon'
   # # ! gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
-  # # TODO set xfce options
+  # # ? set xfce options
   # gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
   # gsettings set org.x.apps.portal color-scheme 'prefer-dark'
   # gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
