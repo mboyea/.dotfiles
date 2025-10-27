@@ -40,14 +40,14 @@ function get_confirmation {
 function install_system {
   if [[ $EUID -ne 0 ]]; then
     echo_bold 'System installations require root privileges.'
-    exec sudo bash "$0" "$@" --system
+    exec sudo --preserve-env=PATH bash "$0" "$@" --system
     exit 1
   fi
 
   if ! $(printenv PATH | grep -q 'nix'); then
     echo_bold 'Making Nix packages accessible as root...'
     echo 'Defaults secure_path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/nix/var/nix/profiles/default/bin"' > /etc/sudoers.d/enablerootnixpkgs # ! sudo
-    exec sudo bash "$0" "$@" --system
+    exec sudo --preserve-env=PATH bash "$0" "$@" --system
     exit 1
   fi
 
@@ -69,7 +69,7 @@ function install_system {
 
   echo_bold 'Installing greetd+tuigreet...'
 
-  apt install greetd
+  apt install -y greetd
   nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/tuigreet/Cargo.toml'"
   cp -f "$SCRIPT_DIR/tuigreet/target/release/tuigreet" /usr/local/bin/
   # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
@@ -80,19 +80,19 @@ function install_system {
   #   systemctl disable lightdm.service # ! sudo
   #   systemctl enable greetd.service # ! sudo
   # fi
-  # ? create cache directory for --remember* tuigreet features to work
-  mkdir -p /var/cache/tuigreet
-  chown _greetd:_greetd /var/cache/tuigreet
-  chmod 0755 /var/cache/tuigreet
+  # # ? create cache directory for --remember* tuigreet features to work
+  # mkdir -p /var/cache/tuigreet
+  # chown _greetd:_greetd /var/cache/tuigreet
+  # chmod 0755 /var/cache/tuigreet
   # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
   find /etc/pam.d -type f -not -name '*.bak' -print0 \
     | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
     | xargs -0r sed -i.bak '/^[^#]*pam_ecryptfs/s/^/# /' # ! sudo
   # # ? hide special session configurations
-  mkdir -p /usr/share/backup
-  cp -r /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup
-  rm -f /usr/share/xsessions/i3-with-shmlog.desktop
-  rm -f /usr/share/xsessions/i3.desktop
+  # mkdir -p /usr/share/backup
+  # cp -rf /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup
+  # rm -f /usr/share/xsessions/i3-with-shmlog.desktop
+  # rm -f /usr/share/xsessions/i3.desktop
   # ? hide xorg output on session startup
   sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop
   # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop
@@ -105,11 +105,11 @@ function install_system {
   sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub
   update-grub
   # 
-  # apt install i3 # ! sudo
+  # apt install -y i3
 
   echo_bold 'Completed system setup.'
 
-  exec sudo -u $SUDO_USER bash "$0" "$@" --skip-system
+  exec sudo --preserve-env=PATH -u $SUDO_USER bash "$0" "$@" --skip-system
 }
 
 function install_user {
@@ -125,17 +125,16 @@ function install_user {
     fi
   done
 
-  echo_bold 'Installing Nix Home Manager...'
-
-  if [[ -z "$HOME_MANAGER_CONFIG_PATH" ]]; then
+  if ! command -v home-manager &> /dev/null; then
+    echo_bold 'Installing Nix Home Manager...'
     nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
     nix-channel --update
     nix-shell '<home-manager>' -A install
   fi
 
-  echo_bold 'Injecting Nix Home Manager configuration...'
 
   if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
+    echo_bold 'Injecting Nix Home Manager configuration...'
     if grep -q -e '^\s*imports=' -e '^\s*imports .*=' ~/.config/home-manager/home.nix; then
       sed -iE '/^\s*imports\(=\| .*=\).*/a\    ./common.nix' ~/.config/home-manager/home.nix
     else
