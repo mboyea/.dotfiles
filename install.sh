@@ -50,58 +50,58 @@ function install_system {
 
   echo_bold 'Updating package cache...'
 
-  apt update # ! sudo
+  apt update
 
-  echo_bold 'Installing i3wm...'
-  
-  apt install i3 # ! sudo
-  
-  echo_bold 'Installing greetd+tuigreet...'
-  
-  nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/tuigreet/Cargo.toml'"
-  cp -f "$SCRIPT_DIR/tuigreet/target/release/tuigreet" /usr/local/bin/ # ! sudo
-  apt install greetd # ! sudo
-  # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
-  systemctl disable casper-md5check # ! sudo
-  # ? disable lightdm, then make sure greetd is enabled
-  if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
-    systemctl disable lightdm.service # ! sudo
-    systemctl enable greetd.service # ! sudo
-  fi
-  # ? create cache directory for --remember* tuigreet features to work
-  mkdir -p /var/cache/tuigreet # ! sudo
-  chown _greetd:_greetd /var/cache/tuigreet # ! sudo
-  chmod 0755 /var/cache/tuigreet # ! sudo
-  # ? configure greetd to use tuigreet
-  mkdir -p /etc/greetd # ! sudo
-  cp -f "$SCRIPT_DIR/root/etc/greetd/config.toml" /etc/greetd # ! sudo
-  mkdir -p /etc/systemd/system/greetd.service.d
-  cp -f "$SCRIPT_DIR/root/etc/systemd/system/greetd.service.d/override.conf" /etc/systemd/system/greetd.service.d # ! sudo
-  # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
-  find /etc/pam.d -type f -not -name '*.bak' -print0 \
-    | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
-    | xargs -0r sed -i.bak '/^[^#]*pam_ecryptfs/s/^/# /' # ! sudo
-  # ? hide special session configurations
-  mkdir -p /usr/share/backup # ! sudo
-  cp -r /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup # ! sudo
-  rm -f /usr/share/xsessions/i3-with-shmlog.desktop # ! sudo
-  # ! rm -f /usr/share/xsessions/cinnamon2d.desktop # ! sudo
-  # ! rm -f /usr/share/wayland-sessions/cinnamon-wayland.desktop # ! sudo
-  rm -f /usr/share/xsessions/i3.desktop # ! sudo
-  # ? hide xorg output on session startup
-  # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
-  sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop # ! sudo
-  # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
-  
-  echo_bold 'Enabling boot terminal output...'
-  
-  sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub # ! sudo
-  update-grub # ! sudo
+  # echo_bold 'Installing i3wm...'
+  # 
+  # apt install i3 # ! sudo
+  # 
+  # echo_bold 'Installing greetd+tuigreet...'
+  # 
+  # nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/tuigreet/Cargo.toml'"
+  # cp -f "$SCRIPT_DIR/tuigreet/target/release/tuigreet" /usr/local/bin/ # ! sudo
+  # apt install greetd # ! sudo
+  # # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
+  # systemctl disable casper-md5check # ! sudo
+  # # ? disable lightdm, then make sure greetd is enabled
+  # if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
+  #   systemctl disable lightdm.service # ! sudo
+  #   systemctl enable greetd.service # ! sudo
+  # fi
+  # # ? create cache directory for --remember* tuigreet features to work
+  # mkdir -p /var/cache/tuigreet # ! sudo
+  # chown _greetd:_greetd /var/cache/tuigreet # ! sudo
+  # chmod 0755 /var/cache/tuigreet # ! sudo
+  # # ? configure greetd to use tuigreet
+  # mkdir -p /etc/greetd # ! sudo
+  # cp -f "$SCRIPT_DIR/root/etc/greetd/config.toml" /etc/greetd # ! sudo
+  # mkdir -p /etc/systemd/system/greetd.service.d
+  # cp -f "$SCRIPT_DIR/root/etc/systemd/system/greetd.service.d/override.conf" /etc/systemd/system/greetd.service.d # ! sudo
+  # # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
+  # find /etc/pam.d -type f -not -name '*.bak' -print0 \
+  #   | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
+  #   | xargs -0r sed -i.bak '/^[^#]*pam_ecryptfs/s/^/# /' # ! sudo
+  # # ? hide special session configurations
+  # mkdir -p /usr/share/backup # ! sudo
+  # cp -r /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup # ! sudo
+  # rm -f /usr/share/xsessions/i3-with-shmlog.desktop # ! sudo
+  # # ! rm -f /usr/share/xsessions/cinnamon2d.desktop # ! sudo
+  # # ! rm -f /usr/share/wayland-sessions/cinnamon-wayland.desktop # ! sudo
+  # rm -f /usr/share/xsessions/i3.desktop # ! sudo
+  # # ? hide xorg output on session startup
+  # # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop # ! sudo
+  # sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop # ! sudo
+  # # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/cinnamon.desktop # ! sudo
+  # 
+  # echo_bold 'Enabling boot terminal output...'
+  # 
+  # sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub # ! sudo
+  # update-grub # ! sudo
 
-  echo_bold 'Configuring screen saver...'
+  # echo_bold 'Configuring screen saver...'
 
-  mkdir -p /etc/lightdm
-  cp -f "$SCRIPT_DIR/root/etc/lightdm/slick-greeter.conf" /etc/lightdm # ! sudo
+  # mkdir -p /etc/lightdm
+  # cp -f "$SCRIPT_DIR/root/etc/lightdm/slick-greeter.conf" /etc/lightdm # ! sudo
 
   echo_bold 'Completed system setup.'
 
@@ -109,54 +109,54 @@ function install_system {
 }
 
 function install_user {
-  echo_bold 'Configuring Settings...'
+  # echo_bold 'Configuring Settings...'
   
-  # ! gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
-  # ! gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark-Aqua'
-  # ! gsettings set org.cinnamon.desktop.interface gtk-theme-backup 'Adwaita'
-  # ! gsettings set org.cinnamon.theme name 'cinnamon'
-  # ! gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
-  # TODO set xfce options
-  gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-  gsettings set org.x.apps.portal color-scheme 'prefer-dark'
-  gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
-  gsettings set org.cinnamon.desktop.interface cursor-theme 'Yaru'
-  update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
-  
-  echo_bold 'Installing Nix Home Manager...'
+  # # ! gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
+  # # ! gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark-Aqua'
+  # # ! gsettings set org.cinnamon.desktop.interface gtk-theme-backup 'Adwaita'
+  # # ! gsettings set org.cinnamon.theme name 'cinnamon'
+  # # ! gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
+  # # TODO set xfce options
+  # gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+  # gsettings set org.x.apps.portal color-scheme 'prefer-dark'
+  # gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
+  # gsettings set org.cinnamon.desktop.interface cursor-theme 'Yaru'
+  # update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
+  # 
+  # echo_bold 'Installing Nix Home Manager...'
 
-  if [[ -z "$HOME_MANAGER_CONFIG_PATH" ]]; then
-    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-    nix-channel --update
-    nix-shell '<home-manager>' -A install
-  fi
+  # if [[ -z "$HOME_MANAGER_CONFIG_PATH" ]]; then
+  #   nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+  #   nix-channel --update
+  #   nix-shell '<home-manager>' -A install
+  # fi
 
-  echo_bold 'Linking dotfiles...'
+  # echo_bold 'Linking dotfiles...'
 
-  find "$SCRIPT_DIR/home" -type f -print0 | while IFS= read -r -d '' file; do
-    file_relative_path="${file#$SCRIPT_DIR/home/}"
-    mkdir -p "$(dirname ~/"$file_relative_path")"
-    rm -rf ~/"$file_relative_path"
-    ln -s "$file" ~/"$file_relative_path"
-    if [[ $? -eq 0 ]]; then
-      echo "Linked $file_relative_path."
-    fi
-  done
+  # find "$SCRIPT_DIR/home" -type f -print0 | while IFS= read -r -d '' file; do
+  #   file_relative_path="${file#$SCRIPT_DIR/home/}"
+  #   mkdir -p "$(dirname ~/"$file_relative_path")"
+  #   rm -rf ~/"$file_relative_path"
+  #   ln -s "$file" ~/"$file_relative_path"
+  #   if [[ $? -eq 0 ]]; then
+  #     echo "Linked $file_relative_path."
+  #   fi
+  # done
 
-  echo_bold 'Injecting Nix Home Manager configuration...'
+  # echo_bold 'Injecting Nix Home Manager configuration...'
 
-  if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
-    if grep -q -e '^\s*imports=' -e '^\s*imports .*=' ~/.config/home-manager/home.nix; then
-      sed -iE '/^\s*imports\(=\| .*=\).*/a\    ./common.nix' ~/.config/home-manager/home.nix
-    else
-      sed -i '/^{\S*$/a\  imports = [\n    ./common.nix\n  ];' ~/.config/home-manager/home.nix
-    fi
-  fi
-  
-  echo_bold 'Updating Nix Home Manager...'
+  # if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
+  #   if grep -q -e '^\s*imports=' -e '^\s*imports .*=' ~/.config/home-manager/home.nix; then
+  #     sed -iE '/^\s*imports\(=\| .*=\).*/a\    ./common.nix' ~/.config/home-manager/home.nix
+  #   else
+  #     sed -i '/^{\S*$/a\  imports = [\n    ./common.nix\n  ];' ~/.config/home-manager/home.nix
+  #   fi
+  # fi
+  # 
+  # echo_bold 'Updating Nix Home Manager...'
 
-  home-manager switch
-  
+  # home-manager switch
+
   echo_bold 'Completed user setup.'
 }
 
@@ -177,7 +177,7 @@ function main {
     if [[ -n "${DO_AUTHORIZE_SYSTEM_INSTALL:x}" ]]; then
       install_system
     else
-      get_y_confirmation 'Do you want to install greetd+tuigreet and i3wm?'
+      get_y_confirmation 'Run system install for Linux Mint XFCE (greetd+tuigreet+i3wm)?'
       if [[ $? -eq 0 ]]; then
         install_system
       fi
