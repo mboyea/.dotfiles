@@ -75,15 +75,15 @@ function install_system {
   # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
   systemctl disable casper-md5check
   # # ? disable lightdm, then make sure greetd is enabled
-  # # TODO
   # if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
-  #   systemctl disable lightdm.service # ! sudo
-  #   systemctl enable greetd.service # ! sudo
+  #   systemctl disable lightdm.service
+  #   systemctl enable greetd.service
   # fi
-  # # ? create cache directory for --remember* tuigreet features to work
-  # mkdir -p /var/cache/tuigreet
-  # chown _greetd:_greetd /var/cache/tuigreet
-  # chmod 0755 /var/cache/tuigreet
+  # todo: find out why and fix that greetd ruins XFCE styling
+  # ? create cache directory for --remember* tuigreet features to work
+  mkdir -p /var/cache/tuigreet
+  chown _greetd:_greetd /var/cache/tuigreet
+  chmod 0755 /var/cache/tuigreet
   # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
   find /etc/pam.d -type f -not -name '*.bak' -print0 \
     | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
