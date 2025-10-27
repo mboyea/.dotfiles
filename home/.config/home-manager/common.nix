@@ -24,7 +24,7 @@
     (config.lib.nixGL.wrap gimp)
     (config.lib.nixGL.wrap inkscape)
     (config.lib.nixGL.wrap audacity)
-    (config.lib.nixGL.wrap lmms)
+    # (config.lib.nixGL.wrap lmms)
     (config.lib.nixGL.wrap obs-studio)
   ];
 

@@ -22,16 +22,19 @@ function echo_bold {
   echo "${options[@]}" "\e[1m$@\e[0m"
 }
 
-function get_y_confirmation {
-  echo -n "$@ ("
-  echo_bold -n 'y'
-  echo -n '/yes to confirm) '
-  read input
-  if [[ "$input" =~ '^[Yy]' ]]; then
-    return 0
-  else
-    return 1
-  fi
+function get_confirmation {
+  echo -n "$@ "
+  echo_bold -n '(y/N)'
+  echo -n ': '
+  read response
+  case "$response" in
+    [yY]|[yY][eE][sS])
+      return 0
+      ;;
+    *)
+      return 1
+      ;;
+  esac
 }
 
 function install_system {
@@ -177,8 +180,7 @@ function main {
     if [[ -n "${DO_AUTHORIZE_SYSTEM_INSTALL:x}" ]]; then
       install_system
     else
-      get_y_confirmation 'Run system install for Linux Mint XFCE (greetd+tuigreet+i3wm)?'
-      if [[ $? -eq 0 ]]; then
+      if get_confirmation 'Run system install for Linux Mint XFCE (greetd+tuigreet+i3wm)?'; then
         install_system
       fi
     fi
