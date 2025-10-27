@@ -1,4 +1,9 @@
 { config, lib, pkgs, inputs, ... }: {
+  nixGL.packages = import (builtins.fetchTarball {
+    url = "https://github.com/nix-community/nixGL/archive/a8e1ce7d49a149ed70df676785b07f63288f53c5.tar.gz";
+    sha256 = "sha256:010n26nhha1l64m7m08rzrfhyixfr8japn3vzbn80dj092wwggrr";
+  }) { inherit pkgs; };
+
   nixpkgs = {
     config = {
       allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
