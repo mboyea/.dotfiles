@@ -136,6 +136,28 @@ function install_user {
     fi
   done
 
+  echo_bold 'Installing Nix Home Manager...'
+
+  if [[ -z "$HOME_MANAGER_CONFIG_PATH" ]]; then
+    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+    nix-channel --update
+    nix-shell '<home-manager>' -A install
+  fi
+
+  echo_bold 'Injecting Nix Home Manager configuration...'
+
+  if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
+    if grep -q -e '^\s*imports=' -e '^\s*imports .*=' ~/.config/home-manager/home.nix; then
+      sed -iE '/^\s*imports\(=\| .*=\).*/a\    ./common.nix' ~/.config/home-manager/home.nix
+    else
+      sed -i '/^{\S*$/a\  imports = [\n    ./common.nix\n  ];' ~/.config/home-manager/home.nix
+    fi
+  fi
+  
+  echo_bold 'Updating Nix Home Manager...'
+
+  home-manager switch
+
   # echo_bold 'Configuring Settings...'
   
   # # ! gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
@@ -149,28 +171,6 @@ function install_user {
   # gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
   # gsettings set org.cinnamon.desktop.interface cursor-theme 'Yaru'
   # update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
-  # 
-  # echo_bold 'Installing Nix Home Manager...'
-
-  # if [[ -z "$HOME_MANAGER_CONFIG_PATH" ]]; then
-  #   nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-  #   nix-channel --update
-  #   nix-shell '<home-manager>' -A install
-  # fi
-
-  # echo_bold 'Injecting Nix Home Manager configuration...'
-
-  # if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
-  #   if grep -q -e '^\s*imports=' -e '^\s*imports .*=' ~/.config/home-manager/home.nix; then
-  #     sed -iE '/^\s*imports\(=\| .*=\).*/a\    ./common.nix' ~/.config/home-manager/home.nix
-  #   else
-  #     sed -i '/^{\S*$/a\  imports = [\n    ./common.nix\n  ];' ~/.config/home-manager/home.nix
-  #   fi
-  # fi
-  # 
-  # echo_bold 'Updating Nix Home Manager...'
-
-  # home-manager switch
 
   echo_bold 'Completed user setup.'
 }
