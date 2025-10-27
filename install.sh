@@ -55,6 +55,18 @@ function install_system {
 
   apt update
 
+  echo_bold 'Overwriting system config files...'
+
+  find "$SCRIPT_DIR/root" -type f -print0 | while IFS= read -r -d '' file; do
+    file_relative_path="${file#$SCRIPT_DIR/root/}"
+    mkdir -p "$(dirname /"$file_relative_path")"
+    rm -rf /"$file_relative_path"
+    cp -f "$file" /"$file_relative_path"
+    if [[ $? -eq 0 ]]; then
+      echo "Copied $file_relative_path."
+    fi
+  done
+
   # echo_bold 'Installing i3wm...'
   # 
   # apt install i3 # ! sudo
@@ -112,6 +124,18 @@ function install_system {
 }
 
 function install_user {
+  echo_bold 'Linking dotfiles...'
+
+  find "$SCRIPT_DIR/home" -type f -print0 | while IFS= read -r -d '' file; do
+    file_relative_path="${file#$SCRIPT_DIR/home/}"
+    mkdir -p "$(dirname ~/"$file_relative_path")"
+    rm -rf ~/"$file_relative_path"
+    ln -s "$file" ~/"$file_relative_path"
+    if [[ $? -eq 0 ]]; then
+      echo "Linked $file_relative_path."
+    fi
+  done
+
   # echo_bold 'Configuring Settings...'
   
   # # ! gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
@@ -133,18 +157,6 @@ function install_user {
   #   nix-channel --update
   #   nix-shell '<home-manager>' -A install
   # fi
-
-  # echo_bold 'Linking dotfiles...'
-
-  # find "$SCRIPT_DIR/home" -type f -print0 | while IFS= read -r -d '' file; do
-  #   file_relative_path="${file#$SCRIPT_DIR/home/}"
-  #   mkdir -p "$(dirname ~/"$file_relative_path")"
-  #   rm -rf ~/"$file_relative_path"
-  #   ln -s "$file" ~/"$file_relative_path"
-  #   if [[ $? -eq 0 ]]; then
-  #     echo "Linked $file_relative_path."
-  #   fi
-  # done
 
   # echo_bold 'Injecting Nix Home Manager configuration...'
 
