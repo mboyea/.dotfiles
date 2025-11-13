@@ -20,7 +20,7 @@ First, I expect functional screen capture, bluetooth audio support, and mouse co
 Second, I expect the freedom to load my own window manager, login manager, and other tools with no hassle.
 
 My current system is MX Linux with Xfce+i3wm, greetd+tuigreet, and Nix Home Manager.
-Configuration for other (often incomplete) systems are backed up in the `os/` directory.
+Configuration for other (often incomplete) systems are backed up in the `system/` directory.
 
 > ! I cannot garuntee the stability of my systems on your hardware, so use it your own risk !
 
