@@ -7,7 +7,7 @@ set $mod $win
 
 ### ACTIONS ###
 # start terminal
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec xfce4-terminal
 # start file explorer
 bindsym $mod+e exec thunar
 # kill focused window
