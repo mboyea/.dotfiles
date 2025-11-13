@@ -1,36 +1,48 @@
 ---
-title: My Linux Mint Dotfiles
+title: Linux Dotfiles
 author: [ Matthew T. C. Boyea ]
 lang: en
-keywords: [ dotfiles, linux, mint, os, operating system, greetd, tuigreet, cinnamon, i3, i3wm, nix, nix home manager ]
+keywords: [ dotfiles, config, configuration, linux, mx, mx linux, os, operating system, greetd, tuigreet, dm, display manager, login manager, xfce, de, desktop environment, i3, i3wm, nix, nix home manager ]
 default_: report
 ---
-## A Linux Mint configuration with a retro-terminal aesthetic
+## Linux configurations by Matthew Boyea
 
-My favorite way to do focused work is on Linux, using keybinds to jump between terminals, messaging, and creative software without touching my mouse.
-However, I also need my laptop to *just work* without spending hours tinkering away on it...
+Linux provides my favorite PC working environments.
+I like to use Vim keybinds to jump between terminals, browser pages, and other workspaces.
+However, I also need my laptop to *just work* for the average user.
 
+- I **don't** want my friends to be *intimidated by the UI*
 - I **don't** want to spend time *manually setting up drivers*
 - I **don't** want inturrupted by *updates breaking the computer*
-- I **don't** want to deal with *niche software incompatibilities*
 
-[Linux Mint] is an excellent mainstream linux distribution, with good defaults and solid driver support.
-These are my dotfiles to setup Linux Mint XFCE with i3wm, a terminal aesthetic, and vim-style keybinds, all while preserving the user-friendly Mint environment.
+The system should be intuitive and attractive for users coming from Windows or Mac.
+First, I expect functional screen capture, bluetooth audio support, and mouse controls to work out-of-the box.
+Second, I expect the freedom to load my own window manager, login manager, and other tools with no hassle.
 
-- This replaces LightDM with [tuigreet] and shows logs at boot time for a retro-terminal aesthetic.
-- This installs [i3wm] on top of the default [XFCE] for tiling and workspaces.
-- This uses [Nix Home Manager] for installing user packages to avoid software incompatibilities.
+My current system is MX Linux with Xfce+i3wm, greetd+tuigreet, and Nix Home Manager.
+Configuration for other (often incomplete) systems are backed up in the `os/` directory.
 
-### Installation
+> ! I cannot garuntee the stability of my systems on your hardware, so use it your own risk !
 
-1. [Install Linux Mint XFCE](https://linuxmint.com/download.php) the operating system.
+### Usage
 
-   Do *not* elect to encrypt the user drive during installation; `ecryptfs` is considered deprecated software by Ubuntu and is disabled as part of this configuration due to incompatibility.
+#### Installation
+
+1. [Install MX Linux](https://mxlinux.org/download-links/) the operating system.
+
+   - Configure disk
+   - Enable hibernation support
+   - *Do NOT enable autologin* (I have not tested it with this config)
+   - Configure clock
+   - Configure default user account
 
 2. [Install Nix](https://nixos.org/download/) the package installer using:
 
    ```sh
    sh <(curl proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
+   ```
+   ```sh
+   grep -qF 'nix-daemon' /etc/rc.local || sed -i 's/^\(\s*\)\(exit\)/\1\/nix\/var\/nix\/profiles\/default\/bin\/nix-daemon\1\2/' /etc/rc.local
    ```
 
    Then, restart your terminal to ensure Nix is included in `$PATH`.
@@ -47,7 +59,7 @@ These are my dotfiles to setup Linux Mint XFCE with i3wm, a terminal aesthetic, 
    ~/.dotfiles/install.sh
    ```
 
-### Usage
+#### Updates
 
 
 ```sh
@@ -60,16 +72,28 @@ home-manager switch
 
 ### FAQ
 
+#### Is this safe?
+
+It is *never* safe to run code from a niche, unvetted source.
+If you want to install someone's configuration, I encourage you to read through and recreate their code yourself so you know exactly how it works.
+
 #### The text is too small on my boot / greet screen. How can I make it bigger?
 
-Use the following command, and follow the prompts:
+Use the following command, and follow the prompts to resize the text:
 
 ```sh
 sudo dpkg-reconfigure console-setup
 ```
 
-[Linux Mint]: https://linuxmint.com
-[XFCE]: https://www.xfce.org/
-[i3wm]: https://i3wm.org/
-[tuigreet]: https://github.com/apognu/tuigreet
-[Nix Home Manager]: https://github.com/nix-community/home-manager
+#### Everything is tiny in the desktop environment. How can I make it bigger?
+
+You're probably on a high-resolution display.
+
+- Go to the `Appearance` app and set `Settings > Window Scaling` to `2x`.
+
+#### The title bar is too short on windows, cutting off the text. How can I make them taller?
+
+You're probably on a high-resolution display.
+
+- Go to the `Window Manager` app and set `Theme` to `Default`
+
