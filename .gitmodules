@@ -1,0 +1,3 @@
+[submodule "software/tuigreet"]
+	path = software/tuigreet
+	url = https://github.com/apognu/tuigreet
