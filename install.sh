@@ -43,29 +43,8 @@ function get_yes_confirmation {
 
 ### SCRIPT ###
 
-# function install_system {
-# }
-# 
-# function install_user {
-# 
-#   # echo_bold 'Configuring Settings...'
-#   # # TODO
-#   # # ! gsettings set org.cinnamon.desktop.interface icon-theme 'Mint-Y-Sand'
-#   # # ! gsettings set org.cinnamon.desktop.interface gtk-theme 'Mint-Y-Dark-Aqua'
-#   # # ! gsettings set org.cinnamon.desktop.interface gtk-theme-backup 'Adwaita'
-#   # # ! gsettings set org.cinnamon.theme name 'cinnamon'
-#   # # ! gsettings set org.cinnamon.desktop.interface gtk-overlay-scrollbars false
-#   # # ? set xfce options
-#   # gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-#   # gsettings set org.x.apps.portal color-scheme 'prefer-dark'
-#   # gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
-#   # gsettings set org.cinnamon.desktop.interface cursor-theme 'Yaru'
-#   # update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
-# }
-
 function install_user {
   echo_bold 'Linking dotfiles...'
-
   find "$SCRIPT_DIR/home" -type f -print0 | while IFS= read -r -d '' file; do
     file_relative_path="${file#$SCRIPT_DIR/home/}"
     mkdir -p "$(dirname ~/"$file_relative_path")"
@@ -83,7 +62,6 @@ function install_user {
     nix-shell '<home-manager>' -A install
   fi
 
-
   if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
     echo_bold 'Injecting Nix Home Manager configuration...'
     if grep -q -e '^\s*imports=' -e '^\s*imports .*=' ~/.config/home-manager/home.nix; then
@@ -96,6 +74,14 @@ function install_user {
   echo_bold 'Updating Nix Home Manager...'
   home-manager switch
   
+#   # ? TODO: set xfce options
+#   # echo_bold 'Configuring additonal desktop settings...'
+#   # gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+#   # gsettings set org.x.apps.portal color-scheme 'prefer-dark'
+#   # gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
+#   # gsettings set org.cinnamon.desktop.interface cursor-theme 'Yaru'
+#   # update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
+
   echo_bold 'Completed user setup.'
 }
 
@@ -157,18 +143,11 @@ function install_system {
 #   # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop
 
 #   # echo_bold 'Installing i3wm...'
-#   # TODO
-#   
+#   # apt install -y i3
+
 #   echo_bold 'Enabling visible boot logs...'
-#   
 #   sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub
 #   update-grub
-#   # 
-#   # apt install -y i3
-# 
-#   echo_bold 'Completed system setup.'
-# 
-#   exec sudo --preserve-env=PATH -u $SUDO_USER bash "$0" "$@" --skip-system
 
   echo_bold 'Completed system setup.'
   exec sudo --preserve-env=PATH -u $SUDO_USER bash "$0" "$OPTS" -S 'false' -- "$ARGS"
