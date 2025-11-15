@@ -44,42 +44,9 @@ function get_yes_confirmation {
 ### SCRIPT ###
 
 # function install_system {
-#   # echo_bold 'Installing i3wm...'
-#   # TODO
-#   
-#   echo_bold 'Enabling visible boot logs...'
-#   
-#   sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub
-#   update-grub
-#   # 
-#   # apt install -y i3
-# 
-#   echo_bold 'Completed system setup.'
-# 
-#   exec sudo --preserve-env=PATH -u $SUDO_USER bash "$0" "$@" --skip-system
 # }
 # 
 # function install_user {
-#   if ! command -v home-manager &> /dev/null; then
-#     echo_bold 'Installing Nix Home Manager...'
-#     nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
-#     nix-channel --update
-#     nix-shell '<home-manager>' -A install
-#   fi
-# 
-# 
-#   if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
-#     echo_bold 'Injecting Nix Home Manager configuration...'
-#     if grep -q -e '^\s*imports=' -e '^\s*imports .*=' ~/.config/home-manager/home.nix; then
-#       sed -iE '/^\s*imports\(=\| .*=\).*/a\    ./common.nix' ~/.config/home-manager/home.nix
-#     else
-#       sed -i '/^{\S*$/a\  imports = [\n    ./common.nix\n  ];' ~/.config/home-manager/home.nix
-#     fi
-#   fi
-#   
-#   echo_bold 'Updating Nix Home Manager...'
-# 
-#   home-manager switch
 # 
 #   # echo_bold 'Configuring Settings...'
 #   # # TODO
@@ -108,6 +75,26 @@ function install_user {
       echo "Linked $file_relative_path."
     fi
   done
+
+  if ! command -v home-manager &> /dev/null; then
+    echo_bold 'Installing Nix Home Manager...'
+    nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+    nix-channel --update
+    nix-shell '<home-manager>' -A install
+  fi
+
+
+  if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
+    echo_bold 'Injecting Nix Home Manager configuration...'
+    if grep -q -e '^\s*imports=' -e '^\s*imports .*=' ~/.config/home-manager/home.nix; then
+      sed -iE '/^\s*imports\(=\| .*=\).*/a\    ./common.nix' ~/.config/home-manager/home.nix
+    else
+      sed -i '/^{\S*$/a\  imports = [\n    ./common.nix\n  ];' ~/.config/home-manager/home.nix
+    fi
+  fi
+  
+  echo_bold 'Updating Nix Home Manager...'
+  home-manager switch
   
   echo_bold 'Completed user setup.'
 }
@@ -141,7 +128,6 @@ function install_system {
   done
 
 #   echo_bold 'Installing greetd+tuigreet...'
-# 
 #   apt install -y greetd
 #   nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/tuigreet/Cargo.toml'"
 #   cp -f "$SCRIPT_DIR/tuigreet/target/release/tuigreet" /usr/local/bin/
@@ -169,7 +155,22 @@ function install_system {
 #   # ? hide xorg output on session startup
 #   sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop
 #   # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop
+
+#   # echo_bold 'Installing i3wm...'
+#   # TODO
+#   
+#   echo_bold 'Enabling visible boot logs...'
+#   
+#   sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub
+#   update-grub
+#   # 
+#   # apt install -y i3
 # 
+#   echo_bold 'Completed system setup.'
+# 
+#   exec sudo --preserve-env=PATH -u $SUDO_USER bash "$0" "$@" --skip-system
+
+  echo_bold 'Completed system setup.'
   exec sudo --preserve-env=PATH -u $SUDO_USER bash "$0" "$OPTS" -S 'false' -- "$ARGS"
 }
 
