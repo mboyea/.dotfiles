@@ -97,3 +97,8 @@ You're probably on a high-resolution display.
 
 - Go to the `Window Manager` app and set `Theme` to `Default`
 
+#### How do I contribute?
+
+Unfortunately, this project doesn't support community contributions right now.
+Feel free to fork, but be sure to read the license.
+
