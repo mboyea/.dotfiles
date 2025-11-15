@@ -51,7 +51,7 @@ function install_user {
     rm -rf ~/"$file_relative_path"
     ln -s "$file" ~/"$file_relative_path"
     if [[ $? -eq 0 ]]; then
-      echo "Linked $file_relative_path."
+      echo "Linked $file_relative_path"
     fi
   done
 
@@ -60,6 +60,7 @@ function install_user {
     nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
     nix-channel --update
     nix-shell '<home-manager>' -A install
+    grep -q 'hm-session-vars.sh' ~/.bashrc || echo -e '. "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"\n' >> ~/.bashrc
   fi
 
   if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
@@ -109,45 +110,45 @@ function install_system {
     rm -rf /"$file_relative_path"
     cp -f "$file" /"$file_relative_path"
     if [[ $? -eq 0 ]]; then
-      echo "Copied $file_relative_path."
+      echo "Copied $file_relative_path"
     fi
   done
 
-#   echo_bold 'Installing greetd+tuigreet...'
-#   apt install -y greetd
-#   nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/tuigreet/Cargo.toml'"
-#   cp -f "$SCRIPT_DIR/tuigreet/target/release/tuigreet" /usr/local/bin/
-#   # ? casper-md5check causes the OS to refuse to boot if it detects changes to the login process
-#   systemctl disable casper-md5check
-#   # # ? disable lightdm, then make sure greetd is enabled
+  echo_bold 'Installing greetd...'
+  apt install -y greetd
+
+  echo_bold 'Building tuigreet...'
+  nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/software/tuigreet/Cargo.toml'"
+  cp -f "$SCRIPT_DIR/software/tuigreet/target/release/tuigreet" /usr/local/bin/
+
+  # echo_bold 'Configuring greetd...'
+  # todo disable dm, enable greetd
 #   # if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
 #   #   systemctl disable lightdm.service
 #   #   systemctl enable greetd.service
 #   # fi
-#   # todo: find out why and fix that disable + enable ruins XFCE styling
 #   # ? create cache directory for --remember* tuigreet features to work
 #   mkdir -p /var/cache/tuigreet
 #   chown _greetd:_greetd /var/cache/tuigreet
 #   chmod 0755 /var/cache/tuigreet
-#   # ? pam_ecryptfs can sometimes cause greetd to fail to boot, so it is disabled here; Ubuntu considers ecryptfs to be deprecated anyways
-#   find /etc/pam.d -type f -not -name '*.bak' -print0 \
-#     | xargs -0r grep -lZ '^[^#]*pam_ecryptfs' \
-#     | xargs -0r sed -i.bak '/^[^#]*pam_ecryptfs/s/^/# /' # ! sudo
-#   # # ? hide special session configurations
+
+#   # # ? hide other session configurations
 #   # mkdir -p /usr/share/backup
 #   # cp -rf /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup
 #   # rm -f /usr/share/xsessions/i3-with-shmlog.desktop
 #   # rm -f /usr/share/xsessions/i3.desktop
+
+  # echo_bold 'Configuring startup behavior...'
 #   # ? hide xorg output on session startup
 #   sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop
 #   # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop
 
-#   # echo_bold 'Installing i3wm...'
-#   # apt install -y i3
-
 #   echo_bold 'Enabling visible boot logs...'
 #   sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub
 #   update-grub
+
+#   # echo_bold 'Installing i3wm...'
+#   # apt install -y i3
 
   echo_bold 'Completed system setup.'
   exec sudo --preserve-env=PATH -u $SUDO_USER bash "$0" "$OPTS" -S 'false' -- "$ARGS"

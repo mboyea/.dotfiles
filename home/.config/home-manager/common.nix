@@ -33,8 +33,8 @@
 
   home.sessionVariables = {
     EDITOR = "nvim";
-    BROWSER = "firefox"; # ? provided by apt with Linux Mint
-    TERMINAL = "alacritty";
+    BROWSER = "firefox"; # ? provided by apt with OS
+    TERMINAL = "xfce4-terminal";
   };
 
   nix = {
