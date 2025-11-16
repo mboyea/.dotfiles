@@ -129,6 +129,7 @@ function install_system {
 
   DISPLAY_MANAGER=$(basename $(cat /etc/X11/default-display-manager))
   if [[ "$DISPLAY_MANAGER" != 'greetd' ]]; then
+    echo_bold 'skipping greetd, it breaks computer'
     # echo_bold 'Enabling greetd...'
     # echo '/usr/sbin/greetd' > /etc/X11/default-display-manager
     # rm -rf /etc/systemd/system/display-manager.service
