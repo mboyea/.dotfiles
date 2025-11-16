@@ -19,6 +19,7 @@
     git
     gh
     direnv
+    tmux
     (config.lib.nixGL.wrap alacritty) 
     (config.lib.nixGL.wrap discord) 
     (config.lib.nixGL.wrap spotify) 

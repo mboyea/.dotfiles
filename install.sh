@@ -114,29 +114,26 @@ function install_system {
     fi
   done
 
-  echo_bold 'Installing greetd...'
-  apt install -y greetd
+  if ! command -v greetd &> /dev/null; then
+    echo_bold 'Installing greetd...'
+    apt install -y greetd
+  fi
 
-  echo_bold 'Building tuigreet...'
+  echo_bold 'Installing tuigreet...'
   nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/software/tuigreet/Cargo.toml'"
   cp -f "$SCRIPT_DIR/software/tuigreet/target/release/tuigreet" /usr/local/bin/
+  # ? create cache directory for --remember* tuigreet features to work
+  mkdir -p /var/cache/tuigreet
+  chown _greetd:_greetd /var/cache/tuigreet
+  chmod 0755 /var/cache/tuigreet
 
-  # echo_bold 'Configuring greetd...'
-  # todo disable dm, enable greetd
-#   # if ! systemctl is-enabled greetd.service | grep -q 'enabled'; then
-#   #   systemctl disable lightdm.service
-#   #   systemctl enable greetd.service
-#   # fi
-#   # ? create cache directory for --remember* tuigreet features to work
-#   mkdir -p /var/cache/tuigreet
-#   chown _greetd:_greetd /var/cache/tuigreet
-#   chmod 0755 /var/cache/tuigreet
-
-#   # # ? hide other session configurations
-#   # mkdir -p /usr/share/backup
-#   # cp -rf /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup
-#   # rm -f /usr/share/xsessions/i3-with-shmlog.desktop
-#   # rm -f /usr/share/xsessions/i3.desktop
+  DISPLAY_MANAGER=$(basename $(cat /etc/X11/default-display-manager))
+  if [[ "$DISPLAY_MANAGER" != 'greetd' ]]; then
+    # echo_bold 'Enabling greetd...'
+    # echo '/usr/sbin/greetd' > /etc/X11/default-display-manager
+    # rm -rf /etc/systemd/system/display-manager.service
+    # dpkg-reconfigure -f noninteractive greetd
+  fi
 
   # echo_bold 'Configuring startup behavior...'
 #   # ? hide xorg output on session startup
@@ -149,6 +146,11 @@ function install_system {
 
 #   # echo_bold 'Installing i3wm...'
 #   # apt install -y i3
+#   # # ? hide other session configurations
+#   # mkdir -p /usr/share/backup
+#   # cp -rf /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup
+#   # rm -f /usr/share/xsessions/i3-with-shmlog.desktop
+#   # rm -f /usr/share/xsessions/i3.desktop
 
   echo_bold 'Completed system setup.'
   exec sudo --preserve-env=PATH -u $SUDO_USER bash "$0" "$OPTS" -S 'false' -- "$ARGS"
