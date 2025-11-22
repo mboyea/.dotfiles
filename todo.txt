@@ -1,0 +1,74 @@
+# fix screentearing
+create file /usr/share/X11/xorg.conf.d/20-intel.conf with content:
+```
+Section "Device"  
+  Identifier  "Intel Graphics"  
+  Driver      "intel"  
+  Option      "AccelMethod"  "sna"  
+  Option      "TearFree"     "true"  
+EndSection
+```
+Display > Scale -> Custom 0.5, 0.5 (or whatever is best for your display size)
+
+# setup workspaces
+Workspaces > Number of Workspaces -> 10
+Workspaces > Margins -> 20, 20, 70, 20
+Workspaces -> Name each workspace a single number 1-2-...-9-0
+Panel > Row Size -> 50
+Panel > Appearance > Icons > Fixed icon size -> 32
+Panel > Items > Add
+- Workspace Switcher
+- ^ up to top, under Whisker Menu
+Panel > Items > Show Desktop -> v down to bottom
+Panel > Items > Launcher (several) -> Remove
+
+# make whisker menu open on key release and on Super+S
+sudo apt install xcape
+Keyboard > Application Shortcuts
+- xfce4-popup-whiskermenu -> Remove
+- orca -> Remove
+- x-terminal-emulator -> Remove
+- Add > x-terminal-emulator > Super+Return
+Session and Startup > Application Autostart > Add
+- xcape
+- Rebind Win Key
+- xcape -e 'Super_L=Super_L|S'
+- on login
+Keyboard > Application Shortcuts > Add
+- xfce4-popup-whiskermenu
+- Super+S
+
+# setup window keybinds
+Window Manager > Keyboard
+- FIRSTLY clear ALL values you're changing, otherwise the config will fail to properly set new binds
+- Cycle windows -> Alt+Tab
+- Cycle windows (reverse) -> Shift+Alt+Tab
+- Close window -> Shift+Super+Q
+- Maximize window -> Super+F
+- Hide window -> Super+Down
+- Resize window -> Shift+Super+R
+- Toggle fullscreen -> F11
+- Move window to workspace n -> Shift+Super+n
+- Tile window to the left/right -> Shift+Super+Left/Right
+- Show desktop -> Super+D
+- Left workspace -> Shift+Super+Tab
+- Right workspace -> Super+Tab
+- Workspace n -> Super+n
+- LASTLY test ALL keybinds
+- IF a keybind doesn't work, remove its duplicate in ~/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml
+Window Manager > Focus > Click to focus
+Window Manager Tweaks > Accessibility > Automatically tile windows when moving towards the screen edge -> Enabled
+
+# change window styles
+Desktop Settings > Applications > Dark mode -> Prefer dark mode
+Window Manager > Style
+- Title font -> 11
+- Theme -> Mint-Y-Dark-Blue
+Panel > Appearance > Dark Mode -> Enabled
+Appearance
+- Style -> Mint-Y-Dark-Blue
+- Icons -> Yaru
+Xfce Terminal > Edit > Preferences
+- Appearance > Font > Use system font > Enabled
+- Appearance > Background > Opacity > 0.90
+
