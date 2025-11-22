@@ -79,7 +79,14 @@ If you want to install someone's configuration, I encourage you to read through 
 
 #### The text is too small on my boot / greet screen. How can I make it bigger?
 
-Use the following command, and follow the prompts to resize the text:
+Uncomment the line with `GRUB_GFXMODE=` in `/etc/default/grub`.
+Apply the changes using:
+
+```sh
+sudo update-grub2
+```
+
+Then use the following command, and follow the prompts to change the display size:
 
 ```sh
 sudo dpkg-reconfigure console-setup
@@ -89,13 +96,7 @@ sudo dpkg-reconfigure console-setup
 
 You're probably on a high-resolution display.
 
-- Go to the `Appearance` app and set `Settings > Window Scaling` to `2x`.
-
-#### The title bar is too short on windows, cutting off the text. How can I make them taller?
-
-You're probably on a high-resolution display.
-
-- Go to the `Window Manager` app and set `Theme` to `Default`
+- Go to the `Display` app and set `Scale > Custom` to `0.5`.
 
 #### How do I contribute?
 
