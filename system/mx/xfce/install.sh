@@ -60,6 +60,7 @@ function install_user {
     nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
     nix-channel --update
     nix-shell '<home-manager>' -A install
+    grep -q 'hm-session-vars.sh' ~/.bashrc || echo -e '. "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"\n' >> ~/.bashrc
   fi
 
   if ! grep -q '^\s*./common.nix' ~/.config/home-manager/home.nix; then
@@ -70,17 +71,17 @@ function install_user {
       sed -i '/^{\S*$/a\  imports = [\n    ./common.nix\n  ];' ~/.config/home-manager/home.nix
     fi
   fi
-
+  
   echo_bold 'Updating Nix Home Manager...'
   home-manager switch
-
- # echo_bold 'Configuring additional desktop settings...'
- # ? TODO: set xfce options
- # gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
- # gsettings set org.x.apps.portal color-scheme 'prefer-dark'
- # gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
- # gsettings set org.cinnamon.desktop.interface cursor-theme 'Yaru'
- # update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
+  
+#   # ? TODO: set xfce options
+#   # echo_bold 'Configuring additonal desktop settings...'
+#   # gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+#   # gsettings set org.x.apps.portal color-scheme 'prefer-dark'
+#   # gsettings set org.gnome.desktop.interface cursor-theme 'Yaru'
+#   # gsettings set org.cinnamon.desktop.interface cursor-theme 'Yaru'
+#   # update-alternatives --set x-cursor-theme '/usr/share/icons/Adwaita/cursor.theme'
 
   echo_bold 'Completed user setup.'
 }
@@ -103,7 +104,7 @@ function install_system {
   apt update
 
   echo_bold 'Overwriting system config files...'
-  find "$SCRIPT_DIR/system/mint/xfce/root" -type f -print0 | while IFS= read -r -d '' file; do
+  find "$SCRIPT_DIR/system/mx/xfce/root" -type f -print0 | while IFS= read -r -d '' file; do
     file_relative_path="${file#$SCRIPT_DIR/system/mx/xfce/root/}"
     mkdir -p "$(dirname /"$file_relative_path")"
     rm -rf /"$file_relative_path"
@@ -113,53 +114,47 @@ function install_system {
     fi
   done
 
-  # if ! command -v greetd &> /dev/null; then
-  #   echo_bold 'Installing greetd...'
-  #   apt install -y greetd
-  # fi
-
-  # echo_bold 'Installing tuigreet...'
-  # nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/software/tuigreet/Cargo.toml'"
-  # cp -f "$SCRIPT_DIR/software/tuigreet/target/release/tuigreet" /usr/local/bin/
-  # # ? create cache directory for --remember* tuigreet features to work
-  # mkdir -p /var/cache/tuigreet
-  # chown _greetd:_greetd /var/cache/tuigreet
-  # chmod 0755 /var/cache/tuigreet
-
-  # DISPLAY_MANAGER=$(basename $(cat /etc/X11/default-display-manager))
-  # if [[ "$DISPLAY_MANAGER" != 'greetd' ]]; then
-  #   echo_bold 'Enabling greetd...'
-  #   echo '/usr/sbin/greetd' > /etc/X11/default-display-manager
-  #   rm -rf /etc/systemd/system/display-manager.service
-  #   dpkg-reconfigure -f noninteractive greetd
-  # fi
-
-  # echo_bold 'Installing i3wm...'
-  # apt install -y i3
-  # # ? hide other session configurations
-  # mkdir -p /usr/share/backup
-  # cp -rf /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup
-  # rm -f /usr/share/xsessions/i3-with-shmlog.desktop
-  # rm -f /usr/share/xsessions/i3.desktop
-
-  if ! grep -q '/dev/null' /usr/share/xsessions/xfce.desktop; then
-    echo_bold 'Disabling xorg startup text for xfce desktop...'
-    sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop
+  if ! command -v greetd &> /dev/null; then
+    echo_bold 'Installing greetd...'
+    apt install -y greetd
   fi
 
-  # if ! grep -q '/dev/null' /usr/share/xsessions/i3.desktop; then
-  #   echo_bold 'Disabling xorg startup text for i3 desktop...'
-  #   sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop
-  # fi
+  echo_bold 'Installing tuigreet...'
+  nix-shell -p cargo --command "cargo build --release --manifest-path '$SCRIPT_DIR/software/tuigreet/Cargo.toml'"
+  cp -f "$SCRIPT_DIR/software/tuigreet/target/release/tuigreet" /usr/local/bin/
+  # ? create cache directory for --remember* tuigreet features to work
+  mkdir -p /var/cache/tuigreet
+  chown _greetd:_greetd /var/cache/tuigreet
+  chmod 0755 /var/cache/tuigreet
 
-  if grep -q 'GRUB_CMDLINE_LINUX_DEFAULT.*\(quiet\|splash\)' /etc/default/grub; then
-    echo_bold 'Disabling system boot splash...'
-    sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub
-    update-grub2
+  DISPLAY_MANAGER=$(basename $(cat /etc/X11/default-display-manager))
+  if [[ "$DISPLAY_MANAGER" != 'greetd' ]]; then
+    echo_bold 'skipping greetd, it breaks computer'
+    # echo_bold 'Enabling greetd...'
+    # echo '/usr/sbin/greetd' > /etc/X11/default-display-manager
+    # rm -rf /etc/systemd/system/display-manager.service
+    # dpkg-reconfigure -f noninteractive greetd
   fi
+
+  # echo_bold 'Configuring startup behavior...'
+#   # ? hide xorg output on session startup
+#   sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/xfce.desktop
+#   # ! sed -i '/^Exec=[^>]*$/s/$/ > \/dev\/null 2>&1/' /usr/share/xsessions/i3.desktop
+
+#   echo_bold 'Enabling visible boot logs...'
+#   sed -i.bak '/GRUB_CMDLINE_LINUX_DEFAULT/s/quiet\|splash//g' /etc/default/grub
+#   update-grub
+
+#   # echo_bold 'Installing i3wm...'
+#   # apt install -y i3
+#   # # ? hide other session configurations
+#   # mkdir -p /usr/share/backup
+#   # cp -rf /usr/share/xsessions /usr/share/wayland-sessions /usr/share/backup
+#   # rm -f /usr/share/xsessions/i3-with-shmlog.desktop
+#   # rm -f /usr/share/xsessions/i3.desktop
 
   echo_bold 'Completed system setup.'
-  exec sudo --preserve-env=PATH -u "$SUDO_USER" bash "$0" "$OPTS" -S 'false' -- "$ARGS"
+  exec sudo --preserve-env=PATH -u $SUDO_USER bash "$0" "$OPTS" -S 'false' -- "$ARGS"
 }
 
 function interpret_opts_args {
