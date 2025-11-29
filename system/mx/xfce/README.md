@@ -20,7 +20,6 @@ First, I expect functional screen capture, bluetooth audio support, and mouse co
 Second, I expect the freedom to load my own window manager, login manager, and other tools with no hassle.
 
 My current system is Linux Mint Xfce with Nix Home Manager.
-It is configured to behave as a mix between Vim, i3wm, and Windows 10.
 Configuration for other (often incomplete) systems are backed up in the `system/` directory.
 
 > ! I cannot garuntee the stability of my systems on your hardware, so use it your own risk !
@@ -31,12 +30,19 @@ Configuration for other (often incomplete) systems are backed up in the `system/
 
 1. [Install Linux Mint](https://linuxmint.com/download.php) the operating system.
 
-   - *Do NOT elect to encrypt the user drive during installation* (I have not tested it with this config)
+   - Configure disk
+   - Enable hibernation support
+   - *Do NOT enable autologin* (I have not tested it with this config)
+   - Configure clock
+   - Configure default user account
 
 2. [Install Nix](https://nixos.org/download/) the package installer using:
 
    ```sh
    sh <(curl proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
+   ```
+   ```sh
+   grep -qF 'nix-daemon' /etc/rc.local || sed -i 's/^\(\s*\)\(exit\)/\1\/nix\/var\/nix\/profiles\/default\/bin\/nix-daemon\1\2/' /etc/rc.local
    ```
 
    Then, restart your terminal to ensure Nix is included in `$PATH`.
