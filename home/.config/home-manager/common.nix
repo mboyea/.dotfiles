@@ -18,11 +18,11 @@
     neovim
     git
     gh
-    direnv
     tmux
-    (config.lib.nixGL.wrap alacritty) 
-    (config.lib.nixGL.wrap discord) 
-    (config.lib.nixGL.wrap spotify) 
+    (config.lib.nixGL.wrap scribus)
+    (config.lib.nixGL.wrap alacritty)
+    (config.lib.nixGL.wrap discord)
+    (config.lib.nixGL.wrap spotify)
     (config.lib.nixGL.wrap vlc)
     # (config.lib.nixGL.wrap libreoffice) # can't install due to cache miss + 5hr build
     (config.lib.nixGL.wrap gimp)
@@ -31,6 +31,14 @@
     # (config.lib.nixGL.wrap lmms) # can't install due to cache miss + build failure
     (config.lib.nixGL.wrap obs-studio)
   ];
+
+  programs = {
+    direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      nix-direnv.enable = true;
+    }
+  }
 
   home.sessionVariables = {
     EDITOR = "nvim";

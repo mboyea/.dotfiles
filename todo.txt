@@ -72,3 +72,7 @@ Xfce Terminal > Edit > Preferences
 - Appearance > Font > Use system font > Enabled
 - Appearance > Background > Opacity > 0.90
 
+# install xclip
+apt install xclip
+apt install trezor
+
